@@ -290,7 +290,7 @@ abstract class BaseUser
             $stmt -> execute();
             
             
-            return true;
+            return $stmt->fetch(PDO::FETCH_ASSOC);
         }catch(PDOException $e){
             echo "出错信息：".$e->getMessage();
             return false;
