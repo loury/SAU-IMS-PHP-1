@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50714
 File Encoding         : 65001
 
-Date: 2016-12-01 11:34:23
+Date: 2016-12-06 23:52:31
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -160,6 +160,23 @@ INSERT INTO `user` VALUES ('1', '1', '28c8edde3d61a0411511d3b1866f0636', '2', '1
 INSERT INTO `user` VALUES ('2', '2', '2', '1', '2', '1');
 
 -- ----------------------------
+-- Table structure for userinfo
+-- ----------------------------
+DROP TABLE IF EXISTS `userinfo`;
+CREATE TABLE `userinfo` (
+  `user_id` int(11) NOT NULL,
+  `head_img` varchar(255) DEFAULT NULL,
+  `name` varchar(30) DEFAULT NULL,
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of userinfo
+-- ----------------------------
+INSERT INTO `userinfo` VALUES ('1', '1.jpg', null);
+INSERT INTO `userinfo` VALUES ('2', null, null);
+
+-- ----------------------------
 -- Table structure for user_club
 -- ----------------------------
 DROP TABLE IF EXISTS `user_club`;
@@ -183,7 +200,6 @@ DROP TABLE IF EXISTS `user_notice`;
 CREATE TABLE `user_notice` (
   `user_id` int(11) NOT NULL,
   `notice_id` int(11) NOT NULL,
-  `delete` tinyint(4) NOT NULL DEFAULT '0',
   `read` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`user_id`,`notice_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -191,22 +207,21 @@ CREATE TABLE `user_notice` (
 -- ----------------------------
 -- Records of user_notice
 -- ----------------------------
-INSERT INTO `user_notice` VALUES ('1', '3', '1', '0');
-INSERT INTO `user_notice` VALUES ('1', '4', '1', '1');
-INSERT INTO `user_notice` VALUES ('1', '29', '0', '0');
-INSERT INTO `user_notice` VALUES ('1', '30', '0', '0');
-INSERT INTO `user_notice` VALUES ('1', '31', '0', '0');
-INSERT INTO `user_notice` VALUES ('1', '32', '0', '0');
-INSERT INTO `user_notice` VALUES ('1', '33', '0', '0');
-INSERT INTO `user_notice` VALUES ('1', '34', '0', '0');
-INSERT INTO `user_notice` VALUES ('1', '35', '0', '0');
-INSERT INTO `user_notice` VALUES ('2', '29', '0', '0');
-INSERT INTO `user_notice` VALUES ('2', '30', '0', '0');
-INSERT INTO `user_notice` VALUES ('2', '31', '0', '0');
-INSERT INTO `user_notice` VALUES ('2', '32', '0', '0');
-INSERT INTO `user_notice` VALUES ('2', '33', '0', '0');
-INSERT INTO `user_notice` VALUES ('2', '34', '0', '0');
-INSERT INTO `user_notice` VALUES ('2', '35', '0', '0');
+INSERT INTO `user_notice` VALUES ('1', '3', '0');
+INSERT INTO `user_notice` VALUES ('1', '4', '1');
+INSERT INTO `user_notice` VALUES ('1', '29', '0');
+INSERT INTO `user_notice` VALUES ('1', '30', '0');
+INSERT INTO `user_notice` VALUES ('1', '31', '0');
+INSERT INTO `user_notice` VALUES ('1', '32', '0');
+INSERT INTO `user_notice` VALUES ('1', '33', '0');
+INSERT INTO `user_notice` VALUES ('1', '34', '0');
+INSERT INTO `user_notice` VALUES ('2', '29', '0');
+INSERT INTO `user_notice` VALUES ('2', '30', '0');
+INSERT INTO `user_notice` VALUES ('2', '31', '0');
+INSERT INTO `user_notice` VALUES ('2', '32', '0');
+INSERT INTO `user_notice` VALUES ('2', '33', '0');
+INSERT INTO `user_notice` VALUES ('2', '34', '0');
+INSERT INTO `user_notice` VALUES ('2', '35', '0');
 
 -- ----------------------------
 -- Table structure for year_check

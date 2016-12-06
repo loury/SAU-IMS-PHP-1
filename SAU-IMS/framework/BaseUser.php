@@ -297,7 +297,31 @@ abstract class BaseUser
         }
     }
     
-    
+     /**
+     * 获得用户的头像名字等信息
+     * 
+     * *****账号|用户名***问题*****
+     * 不用用户的名字登陆
+     * ****************************
+     * 
+     */
+    public function getUserInfo(){
+        $sql = "select head_img `headImgName`, `name` from `userinfo` where user_id = ?";
+        $conn = Database::getInstance();
+
+        try{
+            $stmt = $conn -> prepare($sql);  
+            $stmt -> bindParam(1,$this->id);//用户id
+            $stmt -> execute();
+            
+            
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+
+        }catch(PDOException $e){
+            echo "出错信息：".$e->getMessage();
+            return false;
+        }
+    }
 
     /**
      * 注册

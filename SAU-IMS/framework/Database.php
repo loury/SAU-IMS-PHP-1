@@ -46,6 +46,8 @@ class Database
 
             try {
                 self::$instance = new PDO($content, $info['username'], $info['password']);//新实例化
+                self::$instance->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
+                // 设置错误处理，测试用
             } catch (PDOException $e) {
                 die("配置信息错误");
             }

@@ -11,9 +11,8 @@ require_once FRAME_PATH."ModelFactory.php";
 class AdminMainCtrl
 {
 	
-	private $user;
-	public function __construct()
-    {
+  private $user;
+	   public function __construct(){
     	session_start();
     	$userName = $_SESSION['userName'];
     	$this->user = ModelFactory::adminFactory($userName);//创建管理员model类对象
@@ -187,6 +186,17 @@ class AdminMainCtrl
   		}else{
   			echo json_encode(false);
   		}
+    }
+    /**
+     * 获得用户的头像名字等信息
+     * 默认无信息返回null
+     * 'headImgName':图片名字
+     * 'name':用户的名字
+     * 
+     */
+    public function getUserInfo(){
+      $userinfo = $this->user->getUserInfo();
+      echo json_encode($userinfo);
     }
 
 }

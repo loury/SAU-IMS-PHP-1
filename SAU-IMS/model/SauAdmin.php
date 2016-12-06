@@ -147,7 +147,7 @@ class SauAdmin extends BaseUser
      * @param int $limitR 获得第limitL+1到第limitR行数据
      * @return array() 公告详细信息
      */
-    public function searchSendNoticesByTitle($text,$limitL,$limitR){//转义。。%等
+    public function searchSendNoticesByTitle($text,$limitL,$limitR){//还没转义%等符号，没处理text为空的情况
         $sql = "select n.id `id`,`title`,`time`,c.name `name`,`text`
                 from notice n
                 join clubinfo c on c.club_id = n.club_id
@@ -157,7 +157,7 @@ class SauAdmin extends BaseUser
         $conn = Database::getInstance();
         try{
             $text = "%".$text."%";
-            var_dump($text);
+            // var_dump($text);
             $stmt = $conn -> prepare($sql);
             $stmt ->bindParam(1,$this->getClubId());//社团id
             $stmt ->bindParam(2,$text);//搜索内容
