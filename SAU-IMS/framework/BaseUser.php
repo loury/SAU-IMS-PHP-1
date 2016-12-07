@@ -7,10 +7,8 @@
  * Time: 12:15
  */
 
-require_once "./framework/Database.php";
-//***************问题****************
-//把Database::getInstance()赋给私有变量
-//**************************************
+defined("APP") or die("error");
+
 abstract class BaseUser
 {
     /**
@@ -39,33 +37,15 @@ abstract class BaseUser
      */
     public function __construct($userName = "")
     {
-        //已经登陆成功后保存了session文件，所以可以用session给这些属性赋值
-        //但是如果用户禁用cookie就找不到服务器中的session文件
-        //所以还是从数据库中查询出信息给其赋值，
-        //但是每次请求都会新建一个user对象，即每次请求都会先查询一次数据库。。。。。。
         //不明白为什么形参userName要为空
         $this->userName = $userName;
-
-        
-    }
-    /**
-     * 初始化user
-     * @param $userName string 用户名
-     * 
-     */
-    public function init($userName){
-        $this->userName = $userName;
-        $userinfo = $this->getUserIdentify($userName);
-        $this->id = $userinfo['id'];
-        $this->clubId = $userinfo['club_id'];
-        
+        $this->getIdentify();//识别用户，无论是否调用checkAccount方法或该用户是否存在
     }
 
     /**
      *获取用户标识，包括用户id,以及用户所在的组织
-     * @return int 权限
      */
-    public function getIdentify()
+    private function getIdentify()
     {
         $sql = "select `id`,`club_id` from `user` where `username`=?";
         $conn = Database::getInstance();//获取接口
@@ -73,8 +53,9 @@ abstract class BaseUser
 
         $stmt->bindParam(1, $this->userName);//绑定参数
         $stmt->execute();
-
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $info = $stmt->fetch(PDO::FETCH_ASSOC);//获取用户信息
+        $this->id = isset($info["id"]) ? $info["id"] : 0;
+        $this->clubId = isset($info["club_id"]) ? $info["club_id"] : 0;
     }
 
     /**
@@ -217,85 +198,7 @@ abstract class BaseUser
         return $stmt->fetch(PDO::FETCH_ASSOC)['username'];
     }
 
-    
-   
- 
-    /**
-     * 将公告未读的状态设为已读
-     * 根据用户id和公告id修改该用户公告的已读未读状态
-     *
-     * @param int $nid 公告id
-     * @return bool true：修改成功；flase：修改失败
-     */
-    public function setNoticeRead($nid){
-        $sql = "update `user_notice`  
-                set `read` = 1
-                where `user_id` = ? and `notice_id` = ?";
-        $conn = Database::getInstance();
-        try{
-            $stmt = $conn -> prepare($sql);
-            $stmt -> bindParam(1,$this->id);//用户id
-            $stmt -> bindParam(2,$nid);//公告id
-            $stmt -> execute();
 
-            return true;
-        }catch(PDOException $e){
-            echo "出错信息：".$e->getMessage();
-            return false;
-        }
-       
-
-    }
-
-    /**
-     * 删除该用户的公告
-     * 根据用户id和公告id删除该用户的公告
-     * 
-     * @param int[] $nid 公告id数组
-     * @return bool true：删除成功；flase：删除失败
-     */
-    public function deleteUserNotice($nid){
-        $sql = "delete from `user_notice` where `user_id` = ? and notice_id = ?";
-        $conn = Database::getInstance();
-
-        try{
-            $stmt = $conn -> prepare($sql);
-            $stmt -> bindParam(1,$this->id);//用户id 
-            foreach ($nid as $value) {
-               
-                $stmt -> bindParam(2,$nid);//公告id
-                $stmt -> execute();
-            }
-            
-            return true;
-        }catch(PDOException $e){
-            echo "出错信息：".$e->getMessage();
-            return false;
-        }
-    }
-    /**
-     * 根据公告（notice）的id获得公告信息
-     * @param int $nid 公告id 
-     */
-    public function getNoticeById($nid){
-        $sql = "select n.id `id`,`title`,`time`,c.name `name`,`text`
-                from `notice` n
-                join `clubinfo` c on n.club_id = c.club_id
-                where n.id = ? ";
-        $conn = Database::getInstance();
-
-        try{
-            $stmt = $conn -> prepare($sql);  
-            $stmt -> bindParam(1,$nid,PDO::PARAM_INT);//公告id
-            $stmt -> execute();
-            
-            
-            return $stmt->fetch(PDO::FETCH_ASSOC);
-        }catch(PDOException $e){
-            echo "出错信息：".$e->getMessage();
-            return false;
-        }
-    }
     
      /**
      * 获得用户的头像名字等信息
@@ -309,51 +212,24 @@ abstract class BaseUser
         $sql = "select head_img `headImgName`, `name` from `userinfo` where user_id = ?";
         $conn = Database::getInstance();
 
-        try{
-            $stmt = $conn -> prepare($sql);  
-            $stmt -> bindParam(1,$this->id);//用户id
-            $stmt -> execute();
-            
-            
-            return $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        $stmt = $conn -> prepare($sql);  
+        $stmt -> bindParam(1,$this->id);//用户id
+        $stmt -> execute();
+        
+        
+        return $stmt->fetch(PDO::FETCH_ASSOC);
 
-        }catch(PDOException $e){
-            echo "出错信息：".$e->getMessage();
-            return false;
-        }
+
     }
 
-    /**
-     * 注册
-     * @param $content array 用户注册信息
-     * @return bool 是否注册成功
+     /**
+     * 获得校社联的id
+     * @return int 校社联id
      */
-    abstract public function register($content);
-
-    /**
-     * 显示信息
-     * @param $usreName string 用户名
-     * @return mixed 用户信息
-     */
-    abstract public function showInfo($usreName);
-
-    /**
-     * 编辑信息
-     * @param $userName string 用户名
-     * @param $content array or string 内容
-     * @return bool 是否修改成功
-     */
-    abstract public function editInfo($userName, $content);
-
-    /**
-     * 获取类名
-     * @return mixed 类名
-     */
-    public function getName()
-    {
-        return "BaseUser";
+    public function getSauId(){
+        return $this->sauId;
     }
-
     /**
      * 设置用户名
      * @param $userName string 用户名
@@ -369,7 +245,7 @@ abstract class BaseUser
      */
     public function getUserName()
     {
-        return $this->userName;
+        return isset($this->userName) ? $this->userName : "";
     }
 
     /**
@@ -382,12 +258,12 @@ abstract class BaseUser
     }
 
     /**
-     * 获取用户id
+     * 获取用户id(默认0)
      * @return int
      */
     public function getId()
     {
-        return $this->id;
+        return isset($this->id) ? $this->id : 0;
     }
 
     /**
@@ -396,7 +272,7 @@ abstract class BaseUser
      */
     public function setClubId($clubId)
     {
-        $this->clubId=$clubId;
+        $this->clubId = $clubId;
     }
 
     /**获取用户组织标识
@@ -404,15 +280,7 @@ abstract class BaseUser
      */
     public function getClubId()
     {
-        return $this->clubId;
-    }
-
-     /**
-     * 获得校社联的id
-     * @return int 校社联id
-     */
-    public function getSauId(){
-        return $sauId;
+        return isset($this->clubId) ? $this->clubId : 0;
     }
 }
 
