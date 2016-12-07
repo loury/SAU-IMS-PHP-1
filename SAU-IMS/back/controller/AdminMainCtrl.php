@@ -155,14 +155,14 @@ class AdminMainCtrl
      */
     public function searchNotices(){
         if(!empty($_POST['search'])){//传数组过来
-            //“text”：搜索内容
+            //“title”：搜索内容
             //“l”：限制获得的公告的数目，左边界
             //“r”：右边界
             $notice = json_decode($_POST['search'],true);
-            $text = $notice["text"];//还没转义
+            $title = $notice["title"];//还没转义
             $l = (int)$notice['l'];
             $r = (int)$notice['r'];
-            $notices = $this->noticeManage -> searchSendNoticesByTitle($text,$l,$r);
+            $notices = $this->noticeManage -> searchSendNoticesByTitle($title,$l,$r);
             echo json_encode($notices);//成功数组，失败false
         }else{
             echo json_encode(false);
@@ -199,15 +199,15 @@ class AdminMainCtrl
      */
     public function searchSauNotices(){
         if(!empty($_POST['search'])){//传数组过来
-            //“text”：搜索内容
+            //“title”：搜索内容
             //“l”：限制获得的公告的数目，左边界
             //“r”：右边界
             $notice = json_decode($_POST['search'],true);
-            $text = $notice["text"];//还没转义
+            $title = $notice["title"];//还没转义
             
             $l = (int)$notice['l'];
             $r = (int)$notice['r'];
-            $notices = $this->noticeManage -> searchSauNoticesByTitle($text,$l,$r);
+            $notices = $this->noticeManage -> searchSauNoticesByTitle($title,$l,$r);
             echo json_encode($notices);
         }else{
             echo json_encode(false);

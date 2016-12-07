@@ -161,7 +161,7 @@
           if(data.length != 0){
             var len = data.length;
             for (var i = 0; i < len; i++) {
-              createList(data[i]['title'], data[i]['text'], data[i]['time'], i);
+              createList(data[i]['title'], data[i]['text'], data[i]['time'], data[i]['id']);
             }
           }
           else{
