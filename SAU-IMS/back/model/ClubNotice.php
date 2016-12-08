@@ -139,7 +139,7 @@ class SauNotice extends BaseNotice
      * @param  string[] $nid 公告id数组,json 传过来的是string
      * @return bool true：删除成功；flase：删除失败
      */
-    public function deleteNotice($nid){
+
     public function deleteNotice($nid){
         $sql1 = "delete from `user_notice`
                 where notice_id = ?";//删除用户公告表中的公告信息
@@ -174,7 +174,7 @@ class SauNotice extends BaseNotice
         }
 
     }
-    }
+
     /**
      * 向数据库添加公告（不可以设置触发器）
      * //需要修改,还没测试
@@ -234,29 +234,29 @@ class SauNotice extends BaseNotice
     /**
      * 
      * 根据搜索内容在收到的公告（即校社联公告）中搜索
-     * @param string $text 搜索内容
+     * @param string $title 搜索内容
      * @param int $limitL 
      * @param int $limitR 获得第limitL+1到第limitR行数据
      * @return array() 公告详细信息
      */
-    public function searchSauNoticesByTitle($text,$limitL,$limitR){//转义。。%等
+    public function searchSauNoticesByTitle($title,$limitL,$limitR){
     	if(empty($title)){
     		return false;
     	}
-
-        $sql = "select n.id `id`,`title`,`time`,c.name `name`,`text`
+        $title = Database::specialChrtoNormalChr($title);//将"%"和"_"转为"/%"和"/_"
+        $sql = "select n.id `id`,`title`,`time`,c.name `name`,`title`
                 from notice n
                 join clubinfo c on c.club_id = n.club_id
-                where n.club_id = ? and `title` like ?
+                where n.club_id = ? and `title` like ? escape '/'
                 order by `time`
                 limit ?,?";
         $conn = Database::getInstance();
         try{
-            $text = "%".$text."%";
-            var_dump($text);
+            $title = "%".$title."%";
+            var_dump($title);
             $stmt = $conn -> prepare($sql);
             $stmt ->bindParam(1,$this->getSauId());//校社联id
-            $stmt ->bindParam(2,$text);//搜索内容
+            $stmt ->bindParam(2,$title);//搜索内容
             $stmt ->bindParam(3,$limitL,PDO::PARAM_INT);//左边界
             $stmt ->bindParam(4,$limitR,PDO::PARAM_INT);//右边界
             if(! $stmt -> execute() ){//查询失败返回false

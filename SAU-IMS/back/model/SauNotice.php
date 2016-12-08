@@ -99,6 +99,7 @@ class SauNotice extends BaseNotice
     /**
      * 向数据库添加公告（不可以设置触发器）
      * 数组索引只能是text，time，title，
+     * 转义
      * @param array() $notice 公告信息
      * 
      */
@@ -163,16 +164,16 @@ class SauNotice extends BaseNotice
      * @param int $limitR 获得第limitL+1到第limitR行数据
      * @return array() 公告详细信息
      */
-    public function searchSendNoticesByTitle($title,$limitL,$limitR){//转义。。%等
+    public function searchSendNoticesByTitle($title,$limitL,$limitR){
     	
     	if(empty($title)){
     		return false;
     	}
-
+        $title = Database::specialChrtoNormalChr($title);//将"%"和"_"转为"/%"和"/_"
         $sql = "select n.id `id`,`title`,`time`,c.name `name`,`title`
                 from notice n
                 join clubinfo c on c.club_id = n.club_id
-                where n.club_id = ? and `title` like ?
+                where n.club_id = ? and `title` like ? escape '/'
                 order by `time`
                 limit ?,?";
         $conn = Database::getInstance();
