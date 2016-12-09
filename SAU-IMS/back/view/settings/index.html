@@ -3,22 +3,26 @@
 <head>
 	<meta charset="UTF-8">
 	<title>管理页面</title>
-	<link rel="stylesheet" href="css/common.css">
+	<link rel="stylesheet" href="./view/settings/css/common.css">
 </head>
 <body>
 	<header>
-		<img src="img/logo.png" alt="" class="logo">
-		<h1 class="header rlt">校社联·信息管理系统</h1>
-		<img src="img/无消息.png" alt="没有新信息" class="ring rlt flr">
-			<img src="img/头像logo.png" alt="用户头像" class="userImg rlt flr">
-			<img src="img/下拉logo.png" alt="下拉箭头" class="downArrow rlt flr">
-		<div class="menuContainer flr">
+		<a href="?c=AdminMain">
+			<img src="./view/settings/img/logo.png" alt="" class="logo">
+			<h1 class="header rlt">校社联·信息管理系统</h1>
+		</a>
+		<img src="./view/settings/img/无消息.png" alt="没有新信息" class="ring rlt flr">
+		<div id="showSettings">
+			<img src="./view/settings/img/头像logo.png" alt="用户头像" class="userImg rlt flr">
+			<img src="./view/settings/img/下拉logo.png" alt="下拉箭头" class="downArrow rlt flr">
+		</div>
+		<div id="menuContainer" class="flr">
 			<i class="upArrow rlt"></i>
 			<div class="menu rlt">
-				<a href="" class="menuA"><div class="menulist">信息设置</div></a>
+				<a href="?c=AdminSetting" class="menuA"><div class="menulist">信息设置</div></a>
 				<a href="" class="menuA"><div class="menulist">帮助</div></a>
 				<a href="" class="menuA"><div class="menulist">关于</div></a>
-				<a href="" class="menuA"><div class="menulist">登出</div></a>
+				<a href="?c=LoginAdmin&a=logout" class="menuA"><div class="menulist">登出</div></a>
 			</div>
 		</div>
 	</header>
@@ -33,7 +37,7 @@
 			</nav>
 			<section class="rightPart fll">
 				<div class="content">
-						<img src="img/头像logo.png" alt="" class="headImg rlt">
+						<img src="./view/settings/img/头像logo.png" alt="" class="headImg rlt">
 						<input type="file" class="rlt"><br>
 						<span class="tips rlt">你可以选择png/jpg图片作为头像</span>
 					<ul class="info">
@@ -66,6 +70,8 @@
 	<footer>
 		<p id="footer" class="rlt">&copy;2016-广金校社联</p>
 	</footer>
-	<script src="./js/manage.js" charset="utf-8"></script>
+	<!-- <script src="http://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script> -->
+	<script src="./view/settings/js/jquery.min.js"></script>
+	<script src="./view/settings/js/toggleSettings.js" charset="utf-8"></script>
 </body>
 </html>

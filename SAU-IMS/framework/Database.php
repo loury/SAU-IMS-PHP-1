@@ -48,29 +48,10 @@ class Database
 
             try {
                 self::$instance = new PDO($content, $info['username'], $info['password']);//新实例化
-                // self::$instance->setAttribute(PDO::ATTR_EMULATE_PREPARES,false);
-                self::$instance->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
-                // 设置错误处理，测试用
             } catch (PDOException $e) {
                 die("配置信息错误");
             }
         }
         return self::$instance;//返回接口
-    }
-    /** 
-     * 转义%和_字符
-     * 搜索时才需要用到
-     * 因为前端抛数据之前就将单双引号和反斜杠转义成html能识别的字符了
-     * 所以这里不需要转义单双引号和反斜杠
-     *
-     * 另外数据库中不能有"'\这三个字符
-     * 
-     * @param  string $s [description]
-     * @return string    [description]
-     */
-    public static function specialChrtoNormalChr($s){
-        $n = str_replace("%", "/%", $s);
-        $n = str_replace("_","/_",$n);//sql语句的like需要加escape "/"
-        return $n;
     }
 }

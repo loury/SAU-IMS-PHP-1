@@ -36,6 +36,10 @@ html {
 	overflow-x: auto;
 }
 
+a {
+	text-decoration: none;
+}
+
 /*页眉部分*/
 header {
 	height: 80px;
@@ -68,10 +72,14 @@ header {
 	float: right;
 	border-radius: 30px;
 }
+.userImg:hover {
+	-webkit-box-shadow: 0px 3px 2.68px 0.82px rgba(0, 0, 51, 0.44);
+	box-shadow: 0px 3px 2.68px 0.82px rgba(0, 0, 51, 0.44);
+}
 
 /*主体部分*/
 .threeBars {
-	height: 746px;
+	height: 846px;
 	background-image: url(../img/background.png);
 }
 
@@ -108,8 +116,14 @@ footer {
 	color: rgb(102, 102, 102);
 }
 .navigation li {
-	padding: 20px 0;
+	padding: 15px 0;
+	margin: 10px 0;
 }
+
+.navigation li:hover {
+	background-color: rgba(238, 238, 238, 0.8);
+}
+
 .checked {
 	display: block;
 	background-color: #7ecef4;
@@ -131,11 +145,12 @@ footer {
 	border: 1px solid #aaa;
 }
 #searchField {
-	width: 83%;
-	height: 48px;	/*border: none;*/
+	width: 81%;
+	height: 54px;	/*border: none;*/
 	background-color: inherit;
 	border: 1px solid #6cf;
 	font-size: 2em;
+	padding-left: 5px;
 }
 ::-webkit-input-placeholder {
 
@@ -163,13 +178,19 @@ footer {
 }
 .magnifyingMirror {
 	cursor: pointer;
-	top: 1.5%;
-	left: 37.5%;
+	top: 1.9%;
+	left: 36%;
+}
+.magnifyingMirror:hover{
+	height:32px;
 }
 .refresh {
 	cursor: pointer;
 	top: 1.5%;
 	left: 41.4%;
+}
+.refresh:hover{
+	height:32px;
 }
 
 /*以上是搜索栏的样式*/
@@ -185,11 +206,11 @@ footer {
 .new {
 	cursor: pointer;
 	top: 9%;
-	left: 37.5%;
+	left: 36%;
 }
 .new:hover{
 	width: 32px;
-	hieght: 32px;
+	height: 32px;
 }
 .delete {
 	cursor: pointer;
@@ -223,7 +244,7 @@ background-color: #f3f3f3;
 .content {
 	height: 80px;
 	width: 100%;
-	margin-bottom: 25px;
+	margin-bottom: 20px;
 	background-color: #fff;	/*border: 1px solid #aaa;*/
 	cursor: pointer;
 }
@@ -263,7 +284,7 @@ background-color: #f3f3f3;
 	font-weight: 500;
 	font-size: 1.5em;
 	margin-top: 48px;
-	margin-left: -75px;/*	overflow: hidden; 
+	margin-left: -75px;/*	overflow: hidden;
 		text-overflow: ellipsis;*/
 }
 input[type="checkbox"] {
@@ -322,9 +343,14 @@ input[type="checkbox"] {
 }
 .deleteText {
 	top: -5px;
+	margin-left:10px;
+}
+.mainDelete:hover{
+	height:32px;
+	width:30px;
 }
 .main {
-	height: 556px;
+	height: 648px;
 	background-color: rgba(242, 242, 242, 1);
 	padding: 25px 45px 0;
 	font-family: "微软雅黑";
@@ -335,7 +361,7 @@ input[type="checkbox"] {
 	color: rgba(102, 102, 102, 1);
 	font-weight: 600;
 	text-align: center;
-	margin-bottom: 40px;
+	margin-bottom: 25px;
 }
 .mainContent {
 	color: rgba(102, 102, 102, 1);
@@ -369,7 +395,7 @@ input[type="checkbox"] {
 .newText{
 	resize: none;
 	width: 100%;
-	height: 400px;
+	height: 480px;
 	border: solid 2px rgba(153, 153, 153, 1);
 	border-radius: 10px;
 	background-color: inherit;
@@ -378,6 +404,7 @@ input[type="checkbox"] {
 	padding-right: 10px;
 	margin-left: -10px;
 	overflow: auto;
+	white-space: pre-wrap; /* 自动换行操作 */
 }
 .submit{
 	width: 200px;
@@ -402,4 +429,74 @@ input[type="checkbox"] {
 .submit:active{
 	color: rgba(102,102,102,1);
 	background-color: #fff;
+}
+
+/*以下为个人设置的样式*/
+
+#showSettings {
+	display: inline;
+	cursor: pointer;
+}
+
+.userImg {
+	top: 15px;
+	right: 160px;
+}
+
+.downArrow {
+	top: 35px;
+	right: 80px;
+}
+
+#menuContainer {
+	margin: 20px 0;
+	padding-left: 10px;
+	top: 40px;
+	right: 60px;
+	position: absolute;
+	z-index: 1;
+}
+
+.upArrow {
+	height: 0;
+	width: 0;
+	border-left: 8px solid transparent;
+	border-right: 8px solid transparent;
+	border-bottom: 10px solid rgba(255, 255, 255, 0.8);
+	top: 7px;
+	left: 20px;
+	z-index: 2;
+}
+
+.menu {
+	height: 172px;
+	width: 114px;
+	top: 15px;
+	right: 25px;
+	background-color: rgba(255, 255, 255, 0.8);
+	font-size: 1.8em;
+	padding: 20px 0;
+	border: 2px solid rgba(0, 0, 51, 0.34);
+	border-radius: 5px;
+	margin-left: 25px;
+	-webkit-box-shadow: 0px 3px 2.68px 0.82px rgba(0, 0, 51, 0.44);
+	box-shadow: 0px 3px 2.68px 0.82px rgba(0, 0, 51, 0.44);
+}
+
+.menulist {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 20px;
+}
+
+.menulist:hover {
+	background-color: rgba(238, 238, 238, 0.8);
+}
+
+.menuA {
+	color: rgba(102, 102, 102, 1)
+}
+
+.menuA:hover {
+	color: rgba(51, 204, 255, 1);
 }

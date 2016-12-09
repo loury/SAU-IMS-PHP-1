@@ -62,7 +62,7 @@ class ModelFactory
                 throw new ClassNotFoundException("can't found this class");
                 break;
         }
-        
+
         return new $userType($userName);//返回该实例
     }
 }

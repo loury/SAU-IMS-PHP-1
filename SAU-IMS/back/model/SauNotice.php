@@ -6,7 +6,7 @@
  */
 defined("APP") or die("error");
 
-class SauTask extends BaseNotice
+class SauNotice extends BaseNotice
 {
 	/**
      * 获得校社联管理员自己发布的公告（不需要已读未读的功能）
@@ -18,7 +18,7 @@ class SauTask extends BaseNotice
      *
      * @param int $limitL 
      * @param int $limitR 获得第limitL+1到第limitR行数据,前端实现下拉滚动条即时刷新效果
-     * @return array() 公告详细信息
+     * @return array()|bool 公告详细信息
      */
     public function getSendNotices($limitL,$limitR){
       
@@ -28,9 +28,9 @@ class SauTask extends BaseNotice
                 where n.club_id = ? 
                 order by `time` desc
                 limit ?,?";
-        $conn = Database::getInstance();
-        try{
 
+        try{
+            $conn = Database::getInstance();
             $stmt = $conn -> prepare($sql);
             $stmt ->bindParam(1,$this->getClubId());//社团id    //参数类型默认为string
             $stmt ->bindParam(2,$limitL,PDO::PARAM_INT);//左边界
@@ -47,7 +47,6 @@ class SauTask extends BaseNotice
             return $notices;//没查询到信息则返回的是空数组
             
         }catch(PDOException $e){
-           // echo "出错信息：".$e->getMessage();//测试用
             return false;//sql语句出错
         }
 
@@ -99,7 +98,6 @@ class SauTask extends BaseNotice
     /**
      * 向数据库添加公告（不可以设置触发器）
      * 数组索引只能是text，time，title，
-     * 转义
      * @param array() $notice 公告信息
      * 
      */
@@ -164,17 +162,13 @@ class SauTask extends BaseNotice
      * @param int $limitR 获得第limitL+1到第limitR行数据
      * @return array() 公告详细信息
      */
-    public function searchSendNoticesByTitle($title,$limitL,$limitR){
-    	
-    	if(empty($title)){
-    		return false;
-    	}
-        $title = Database::specialChrtoNormalChr($title);//将"%"和"_"转为"/%"和"/_"
-        $sql = "select n.id `id`,`text`,`time`,c.name `name`,`title`
+    public function searchSendNoticesByTitle($title,$limitL,$limitR){//转义。。%等
+
+        $sql = "select n.id `id`,`title`,`time`,c.name `name`,`title`
                 from notice n
                 join clubinfo c on c.club_id = n.club_id
-                where n.club_id = ? and `title` like ? escape '/'
-                order by `time` desc
+                where n.club_id = ? and `title` like ?
+                order by `time`
                 limit ?,?";
         $conn = Database::getInstance();
         try{

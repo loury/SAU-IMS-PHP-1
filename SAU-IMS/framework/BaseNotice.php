@@ -94,7 +94,8 @@ abstract class BaseNotice
     }
     /**
      * 根据公告（notice）的id获得公告信息
-     * @param int $nid 公告id 
+     * @param int $nid 公告id
+     * @return bool
      */
     public function getNoticeById($nid){
         $sql = "select n.id `id`,`title`,`time`,c.name `name`,`text`
@@ -121,7 +122,7 @@ abstract class BaseNotice
      * @return int 校社联id
      */
     public function getSauId(){
-        return $sauId;
+        return $this->sauId;
     }
 
 
