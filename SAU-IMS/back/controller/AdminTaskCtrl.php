@@ -39,8 +39,8 @@ class AdminTaskCtrl
     ///////////////////
     /**
      * 根据传过来的id获得一条任务的信息
-     * 索引：`id`,`title`,`time`,`name`,`text`,`name`
-     * 其中name是索引数组
+     * 索引：`id`,`title`,`time`,`name`,`text`,`recipients`(收到任务的用户的名字)
+     * 其中recipients是索引数组
      * 
      */
     public function getTaskById(){
@@ -238,7 +238,7 @@ class AdminTaskCtrl
         //  member[0].name
   
     }
-       /**
+    /**
      * 收到的任务（社团管理员）
      */
     public function getTasks(){
