@@ -94,7 +94,7 @@ class AdminMainCtrl
       echo json_encode($userinfo);
     }
     ///////////////////
-    ///管理员
+    ///管理员通用
     ////////////////////
     /**
      * 获得管理员发布的公告
@@ -213,5 +213,5 @@ class AdminMainCtrl
             echo json_encode(false);
         }
     }
-
+    
 }

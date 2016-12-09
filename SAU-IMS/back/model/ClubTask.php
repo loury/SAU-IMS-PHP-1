@@ -28,7 +28,7 @@ class ClubNotice extends BaseNotice
             join `notice` n on n.id = un.notice_id
             join `clubinfo` c on c.club_id = n.club_id
             where un.user_id = ? and n.club_id = ? 
-            order by `time` desc
+            order by `time`
             limit ?,?";
         $conn = Database::getInstance();
         try{
@@ -38,7 +38,7 @@ class ClubNotice extends BaseNotice
             $stmt ->bindParam(3,$limitL);//左边界
             $stmt ->bindParam(4,$limitR;//右边界
             if(! $stmt -> execute() ){//查询失败返回false
-            	return false;
+                return false;
             }
             $notices = array();
             while($row = $stmt -> fetch(PDO::FETCH_ASSOC)){
@@ -71,7 +71,7 @@ class ClubNotice extends BaseNotice
                 from notice n
                 join clubinfo c on c.club_id = n.club_id
                 where n.club_id = ? 
-                order by `time` desc
+                order by `time`
                 limit ?,?";
         $conn = Database::getInstance();
         try{
@@ -82,7 +82,7 @@ class ClubNotice extends BaseNotice
             $stmt ->bindParam(3,$limitR;//右边界
             
             if(! $stmt -> execute() ){//查询失败返回false
-            	return false;
+                return false;
             }
 
             $notices = array();
@@ -109,7 +109,7 @@ class ClubNotice extends BaseNotice
                 join `notice` n on n.id = un.notice_id
                 join clubinfo c on c.club_id = n.club_id
                 where n.user_id = ? and un.club_id = ? and read = ?
-                order by `time` desc";
+                order by `time`";
         $state = 0;//未读的状态
         $conn = Database::getInstance();
         try{
@@ -119,7 +119,7 @@ class ClubNotice extends BaseNotice
             $stmt ->bindParam(2,$this->getSauId());//校社联id
             $stmt ->bindParam(3,$state);//阅读状态：未读
             if(! $stmt -> execute() ){//查询失败返回false
-            	return false;
+                return false;
             }
             $notices = array();
             while($row = $stmt -> fetch(PDO::FETCH_ASSOC)){
@@ -148,22 +148,22 @@ class ClubNotice extends BaseNotice
         $conn = Database::getInstance();
         
         try{
-        	
+            
             $conn -> beginTransaction();//开始事务处理
             $stmt1 = $conn -> prepare($sql1);
             $stmt2 = $conn -> prepare($sql2);
             foreach ($nid as $value) {
-            	$value = (int) $value;
+                $value = (int) $value;
                 $stmt1 -> bindParam(1,$value);//用户id
                 $stmt2 -> bindParam(1,$value);//用户id
-	            if(! $stmt1 -> execute()){
-	            	$conn -> rollBack();//回滚
-	            	return false;//失败返回false
-	            }
-	            if(! $stmt2 -> execute()){
-	            	$conn -> rollBack();//回滚
-	            	return false;//失败返回false
-	            }
+                if(! $stmt1 -> execute()){
+                    $conn -> rollBack();//回滚
+                    return false;//失败返回false
+                }
+                if(! $stmt2 -> execute()){
+                    $conn -> rollBack();//回滚
+                    return false;//失败返回false
+                }
             }
             $conn -> commit();//提交事务   
             return true;
@@ -197,8 +197,8 @@ class ClubNotice extends BaseNotice
             $stmt1 -> bindParam(4,$this->getClubId());
             
             if(! $stmt1 -> execute()){//向notice表中插入数据
-            	$conn -> rollBack();//回滚
-            	return false;//失败返回false
+                $conn -> rollBack();//回滚
+                return false;//失败返回false
             }
             
             $nid = $conn -> lastInsertId();//最后一行插入的数据的id，即添加的公告的id
@@ -207,8 +207,8 @@ class ClubNotice extends BaseNotice
             $stmt2 = bindParam(1,$this->getClubId());
             
             if(!$stmt2 -> execute()){//获得所有用户的id
-            	$conn -> rollBack();//回滚
-            	return false;//失败返回false
+                $conn -> rollBack();//回滚
+                return false;//失败返回false
             }
 
             $stmt3 = $conn -> prepare($sql3);
@@ -218,8 +218,8 @@ class ClubNotice extends BaseNotice
                 $stmt3 -> bindParam(2,$nid);
                 
                 if(!($stmt3 -> execute())){//向user_notice 表中插入数据
-            		$conn -> rollBack();//回滚
-            		return false;//失败返回false
+                    $conn -> rollBack();//回滚
+                    return false;//失败返回false
                 }
             }
             $conn -> commit();//提交事务
@@ -233,24 +233,22 @@ class ClubNotice extends BaseNotice
     }
     /**
      * 
-     * 根据搜索内容在收到的公告中搜索
-     * 被用户自己删除了的公告不会被查询出来
+     * 根据搜索内容在收到的公告（即校社联公告）中搜索
      * @param string $title 搜索内容
      * @param int $limitL 
      * @param int $limitR 获得第limitL+1到第limitR行数据
      * @return array() 公告详细信息
      */
     public function searchSauNoticesByTitle($title,$limitL,$limitR){
-    	if(empty($title)){
-    		return false;
-    	}
+        if(empty($title)){
+            return false;
+        }
         $title = Database::specialChrtoNormalChr($title);//将"%"和"_"转为"/%"和"/_"
-        $sql = "select n.id `id`,`text`,`time`,c.name `name`,`title`
+        $sql = "select n.id `id`,`title`,`time`,c.name `name`,`title`
                 from notice n
                 join clubinfo c on c.club_id = n.club_id
-                join notice_user nu on nu.notice_id = n.id
-                where n.club_id = ? and nu.user_id =? and `title` like ? escape '/'
-                order by `time` desc
+                where n.club_id = ? and `title` like ? escape '/'
+                order by `time`
                 limit ?,?";
         $conn = Database::getInstance();
         try{
@@ -258,12 +256,11 @@ class ClubNotice extends BaseNotice
             var_dump($title);
             $stmt = $conn -> prepare($sql);
             $stmt ->bindParam(1,$this->getSauId());//校社联id
-            $stmt ->bindParam(2,$this->getId());//用户id
             $stmt ->bindParam(2,$title);//搜索内容
             $stmt ->bindParam(3,$limitL,PDO::PARAM_INT);//左边界
             $stmt ->bindParam(4,$limitR,PDO::PARAM_INT);//右边界
             if(! $stmt -> execute() ){//查询失败返回false
-            	return false;
+                return false;
             }
             // var_dump($stmt -> errorinfo());
             $notices = array();
@@ -288,16 +285,16 @@ class ClubNotice extends BaseNotice
      * @return array() 公告详细信息
      */
     public function searchSendNoticesByTitle($text,$limitL,$limitR){//转义。。%等
-    	
-    	if(empty($title)){
-    		return false;
-    	}
-        $title = Database::specialChrtoNormalChr($title);//将"%"和"_"转为"/%"和"/_"
-        $sql = "select n.id `id`,`text`,`time`,c.name `name`,`title`
+        
+        if(empty($title)){
+            return false;
+        }
+
+        $sql = "select n.id `id`,`title`,`time`,c.name `name`,`title`
                 from notice n
                 join clubinfo c on c.club_id = n.club_id
-                where n.club_id = ? and `title` like ? escape '/'
-                order by `time` desc
+                where n.club_id = ? and `title` like ?
+                order by `time`
                 limit ?,?";
         $conn = Database::getInstance();
         try{
@@ -309,7 +306,7 @@ class ClubNotice extends BaseNotice
             $stmt ->bindParam(3,$limitL,PDO::PARAM_INT);//左边界
             $stmt ->bindParam(4,$limitR,PDO::PARAM_INT);//右边界
             if(! $stmt -> execute() ){//查询失败返回false
-            	return false;
+                return false;
             }
             $notices = array();
             while($row = $stmt -> fetch(PDO::FETCH_ASSOC)){
@@ -323,5 +320,5 @@ class ClubNotice extends BaseNotice
         }
 
     }
-    }	
+    }   
 }

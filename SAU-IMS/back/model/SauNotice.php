@@ -6,7 +6,7 @@
  */
 defined("APP") or die("error");
 
-class SauNotice extends BaseNotice
+class SauTask extends BaseNotice
 {
 	/**
      * 获得校社联管理员自己发布的公告（不需要已读未读的功能）
@@ -170,11 +170,11 @@ class SauNotice extends BaseNotice
     		return false;
     	}
         $title = Database::specialChrtoNormalChr($title);//将"%"和"_"转为"/%"和"/_"
-        $sql = "select n.id `id`,`title`,`time`,c.name `name`,`title`
+        $sql = "select n.id `id`,`text`,`time`,c.name `name`,`title`
                 from notice n
                 join clubinfo c on c.club_id = n.club_id
                 where n.club_id = ? and `title` like ? escape '/'
-                order by `time`
+                order by `time` desc
                 limit ?,?";
         $conn = Database::getInstance();
         try{
