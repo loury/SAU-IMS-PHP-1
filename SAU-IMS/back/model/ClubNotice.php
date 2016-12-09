@@ -139,7 +139,7 @@ class SauNotice extends BaseNotice
      * @param  string[] $nid 公告id数组,json 传过来的是string
      * @return bool true：删除成功；flase：删除失败
      */
-    public function deleteNotice($nid){
+
     public function deleteNotice($nid){
         $sql1 = "delete from `user_notice`
                 where notice_id = ?";//删除用户公告表中的公告信息
@@ -174,7 +174,7 @@ class SauNotice extends BaseNotice
         }
 
     }
-    }
+
     /**
      * 向数据库添加公告（不可以设置触发器）
      * //需要修改,还没测试
@@ -243,7 +243,7 @@ class SauNotice extends BaseNotice
     	if(empty($title)){
     		return false;
     	}
-
+        $title = Database::specialChrtoNormalChr($title);//将"%"和"_"转为"/%"和"/_"
         $sql = "select n.id `id`,`title`,`time`,c.name `name`,`text`
                 from notice n
                 join clubinfo c on c.club_id = n.club_id
@@ -285,7 +285,7 @@ class SauNotice extends BaseNotice
      * @param int $limitR 获得第limitL+1到第limitR行数据
      * @return array() 公告详细信息
      */
-    public function searchSendNoticesByTitle($title,$limitL,$limitR){//转义。。%等
+    public function searchSendNoticesByTitle($title,$limitL,$limitR){
     	
     	if(empty($title)){
     		return false;
