@@ -162,13 +162,17 @@ class SauNotice extends BaseNotice
      * @param int $limitR 获得第limitL+1到第limitR行数据
      * @return array() 公告详细信息
      */
-    public function searchSendNoticesByTitle($title,$limitL,$limitR){//转义。。%等
-
-        $sql = "select n.id `id`,`title`,`time`,c.name `name`,`title`
+    public function searchSendNoticesByTitle($title,$limitL,$limitR){
+        
+        if(empty($title)){
+            return false;
+        }
+        $title = Database::specialChrtoNormalChr($title);//将"%"和"_"转为"/%"和"/_"
+        $sql = "select n.id `id`,`text`,`time`,c.name `name`,`title`
                 from notice n
                 join clubinfo c on c.club_id = n.club_id
-                where n.club_id = ? and `title` like ?
-                order by `time`
+                where n.club_id = ? and `title` like ? escape '/'
+                order by `time` desc
                 limit ?,?";
         $conn = Database::getInstance();
         try{
@@ -180,7 +184,7 @@ class SauNotice extends BaseNotice
             $stmt ->bindParam(3,$limitL,PDO::PARAM_INT);//左边界
             $stmt ->bindParam(4,$limitR,PDO::PARAM_INT);//右边界
             if(! $stmt -> execute() ){//查询失败返回false
-            	return false;
+                return false;
             }
             $notices = array();
             while($row = $stmt -> fetch(PDO::FETCH_ASSOC)){

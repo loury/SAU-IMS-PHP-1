@@ -28,7 +28,7 @@ class SauNotice extends BaseNotice
             join `notice` n on n.id = un.notice_id
             join `clubinfo` c on c.club_id = n.club_id
             where un.user_id = ? and n.club_id = ? 
-            order by `time`
+            order by `time` desc
             limit ?,?";
         $conn = Database::getInstance();
         try{
@@ -71,7 +71,7 @@ class SauNotice extends BaseNotice
                 from notice n
                 join clubinfo c on c.club_id = n.club_id
                 where n.club_id = ? 
-                order by `time`
+                order by `time` desc
                 limit ?,?";
         $conn = Database::getInstance();
         try{
@@ -109,7 +109,7 @@ class SauNotice extends BaseNotice
                 join `notice` n on n.id = un.notice_id
                 join clubinfo c on c.club_id = n.club_id
                 where n.user_id = ? and un.club_id = ? and read = ?
-                order by `time`";
+                order by `time` desc";
         $state = 0;//未读的状态
         $conn = Database::getInstance();
         try{
@@ -232,14 +232,14 @@ class SauNotice extends BaseNotice
         }
     }
     /**
-     * 
-     * 根据搜索内容在收到的公告（即校社联公告）中搜索
-     * @param string $text 搜索内容
+     * 根据搜索内容在收到的公告中搜索
+     * 被用户自己删除了的公告不会被查询出来
+     * @param string $title 搜索内容
      * @param int $limitL 
      * @param int $limitR 获得第limitL+1到第limitR行数据
      * @return array() 公告详细信息
      */
-    public function searchSauNoticesByTitle($text,$limitL,$limitR){//转义。。%等
+    public function searchSauNoticesByTitle($title,$limitL,$limitR){//转义。。%等
     	if(empty($title)){
     		return false;
     	}
@@ -247,18 +247,19 @@ class SauNotice extends BaseNotice
         $sql = "select n.id `id`,`title`,`time`,c.name `name`,`text`
                 from notice n
                 join clubinfo c on c.club_id = n.club_id
-                where n.club_id = ? and `title` like ?
-                order by `time`
+                join notice_user nu on nu.notice_id = n.id
+                where n.club_id = ? and nu.user_id =? and `title` like ? escape '/'
+                order by `time` desc
                 limit ?,?";
         $conn = Database::getInstance();
         try{
-            $text = "%".$text."%";
-            var_dump($text);
+            $title = "%".$title."%";
             $stmt = $conn -> prepare($sql);
             $stmt ->bindParam(1,$this->getSauId());//校社联id
-            $stmt ->bindParam(2,$text);//搜索内容
-            $stmt ->bindParam(3,$limitL,PDO::PARAM_INT);//左边界
-            $stmt ->bindParam(4,$limitR,PDO::PARAM_INT);//右边界
+            $stmt ->bindParam(2,$this->getId());//用户id
+            $stmt ->bindParam(3,$title);//搜索内容
+            $stmt ->bindParam(4,$limitL,PDO::PARAM_INT);//左边界
+            $stmt ->bindParam(5,$limitR,PDO::PARAM_INT);//右边界
             if(! $stmt -> execute() ){//查询失败返回false
             	return false;
             }
@@ -279,22 +280,25 @@ class SauNotice extends BaseNotice
      * 根据搜索内容搜索发布的公告
      * 跟SauAdmin的一样
      * 
-     * @param string $text 搜索内容
+     * @param string $title 搜索内容
      * @param int $limitL 
      * @param int $limitR 获得第limitL+1到第limitR行数据
      * @return array() 公告详细信息
      */
-    public function searchSendNoticesByTitle($text,$limitL,$limitR){//转义。。%等
+    public function searchSendNoticesByTitle($title,$limitL,$limitR){//转义。。%等
     	
     	if(empty($title)){
     		return false;
     	}
-
-        $sql = "select n.id `id`,`title`,`time`,c.name `name`,`title`
+        $title = Database::specialChrtoNormalChr($title);//将"%"和"_"转为"/%"和"/_"
+ 
+        $sql = "select n.id `id`,`text`,`time`,c.name `name`,`title`
                 from notice n
                 join clubinfo c on c.club_id = n.club_id
-                where n.club_id = ? and `title` like ?
-                order by `time`
+                where n.club_id = ? and `title` like ? escape '/'
+ 
+                order by `time` desc
+
                 limit ?,?";
         $conn = Database::getInstance();
         try{
